@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Customize the scrollbar track */
+::-webkit-scrollbar {
+  width: 6px; /* Set the width of the scrollbar */
+  height: 6px; /* Set the width of the scrollbar */
+}
+
+/* Customize the scrollbar thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background: #0d996f; /* Change the background color of the thumb */
+  border-radius: 5px; /* Round the corners of the thumb */
+}
+
+/* Customize the scrollbar track when hovering over it */
+::-webkit-scrollbar-track:hover {
+  background: #86f7ff7c; /* Change the background color when hovered */
+}
+
+/* Customize the scrollbar thumb when hovering over it */
+::-webkit-scrollbar-thumb:hover {
+  background: #15ffb9; /* Change the background color of the thumb when hovered */
+}
+
+/* Customize the scrollbar corner (where horizontal and vertical scrollbars meet) */
+::-webkit-scrollbar-corner {
+  background: #000000; /* Change the background color of the scrollbar corner */
+}
+
+/* Customize the scrollbar track in a container with the "dark" class */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  background: #333333be;
+}
+
+/* Customize the scrollbar thumb in a container with the "dark" class */
+.dark ::-webkit-scrollbar-thumb {
+  background: #666666c7;
+}
