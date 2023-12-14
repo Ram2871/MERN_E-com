@@ -11,14 +11,15 @@ const ErrorPage = () => {
           Sorry, an unexpected error has occurred.
         </p>
         <p className="text-center my-5">
+          <h1 className="text-dark">404</h1>
           <h1 className="text-danger">Page Not Found!</h1>
           <span
             className="btn mt-2"
             onClick={() => {
-              navigate("..", { relative: "path" });
+              navigate("/");
             }}
           >
-            Go back
+            Go Home
           </span>
         </p>
       </div>

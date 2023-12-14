@@ -71,10 +71,17 @@ const Header = () => {
                     Policy
                   </NavLink>
                 </li>
+                <li className="nav-item">
+                  <NavLink to="/cart" className="nav-link ">
+                    <Badge count={5} showZero offset={[10, -5]}>
+                      Cart
+                    </Badge>
+                  </NavLink>
+                </li>
 
                 {!auth?.user ? (
                   <>
-                    <li className="nav-item">
+                    <li className="nav-item ms-4">
                       <NavLink to="/register" className="nav-link">
                         Register
                       </NavLink>
@@ -87,13 +94,21 @@ const Header = () => {
                   </>
                 ) : (
                   <>
-                    <li className="nav-item mt-2">
+                    <li className="nav-item ms-4">
                       <MDBDropdown>
-                        <MDBDropdownToggle color="link" size="sm">
+                        <MDBDropdownToggle
+                          color="link"
+                          className="nav-link"
+                          size="sm"
+                        >
                           {auth?.user?.name}
                         </MDBDropdownToggle>
                         <MDBDropdownMenu>
-                          <NavLink to="/dashboard">
+                          <NavLink
+                            to={`${
+                              auth.user.role === "1" ? "/admin" : "/user"
+                            }/dashboard`}
+                          >
                             <MDBDropdownItem link>Dashboard</MDBDropdownItem>
                           </NavLink>
                           <MDBDropdownItem onClick={handleLogout} link>
@@ -104,13 +119,6 @@ const Header = () => {
                     </li>
                   </>
                 )}
-                <li className="nav-item">
-                  <NavLink to="/cart" className="nav-link">
-                    <Badge count={5} showZero offset={[10, -5]}>
-                      Cart
-                    </Badge>
-                  </NavLink>
-                </li>
               </ul>
             </div>
           </div>
