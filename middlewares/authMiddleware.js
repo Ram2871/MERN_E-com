@@ -1,14 +1,21 @@
-//Protected Routes token base
+// Protected Routes token base
 import JWT from "jsonwebtoken";
 import userModel from "../models/User.js";
 
 export const requireSignIn = async (req, res, next) => {
   try {
-    const token = req.headers.authorization;
+    const authorizationHeader = req.headers.authorization;
+
+    if (!authorizationHeader) {
+      return res.status(401).json({ message: "Authorization header is missing" });
+    }
+
+    const token = authorizationHeader.split(" ")[1]; // Extract the token after "Bearer"
 
     if (!token) {
       return res.status(401).json({ message: "JWT token is missing" });
     }
+
     const decoded = JWT.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
@@ -17,6 +24,8 @@ export const requireSignIn = async (req, res, next) => {
     return res.status(401).json({ message: "Invalid JWT token" });
   }
 };
+
+
 
 //admin acceess
 export const isAdmin = async (req, res, next) => {

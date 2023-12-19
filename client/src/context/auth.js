@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
   });
 
   //default axios
-  axios.defaults.headers.common["Authorization"] = auth?.token;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${auth?.token}`;
 
   useEffect(() => {
     let access_token = localStorage.getItem("access_token");
