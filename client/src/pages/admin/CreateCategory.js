@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "./../../components/layout/Layout";
 import AdminMenu from "./../../components/layout/AdminMenu";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "./../../utility/api";
 import CategoryForm from "../../components/form/CategoryForm";
 import { Modal } from "antd";
 
@@ -12,16 +12,18 @@ const CreateCategory = () => {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
+
   //handle Form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("/api/v1/category/create-category", {
+      const { data } = await api.post("/api/v1/category/create-category", {
         name,
       });
       if (data?.success) {
-        toast.success(`${name} is created`);
+        toast.success(data.message);
         getAllCategory();
+        setName("");
       } else {
         toast.error(data.message);
       }
@@ -34,9 +36,9 @@ const CreateCategory = () => {
   //get all cat
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await api.get("/api/v1/category/get-categories");
       if (data?.success) {
-        setCategories(data?.category);
+        setCategories(data?.categories);
       }
     } catch (error) {
       console.log(error);
@@ -52,12 +54,12 @@ const CreateCategory = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put(
+      const { data } = await api.put(
         `/api/v1/category/update-category/${selected._id}`,
         { name: updatedName }
       );
       if (data?.success) {
-        toast.success(`${updatedName} is updated`);
+        toast.success(data.message);
         setSelected(null);
         setUpdatedName("");
         setVisible(false);
@@ -69,14 +71,17 @@ const CreateCategory = () => {
       console.log(error);
     }
   };
+
   //delete category
   const handleDelete = async (pId) => {
     try {
-      const { data } = await axios.delete(
+      let answer = window.prompt("Are You Sure want to delete this category ? ");
+      if (!answer) return;
+      const { data } = await api.delete(
         `/api/v1/category/delete-category/${pId}`
       );
       if (data.success) {
-        toast.success(`category is deleted`);
+        toast.success(data.message);
 
         getAllCategory();
       } else {
@@ -86,6 +91,8 @@ const CreateCategory = () => {
       toast.error("Somtihing went wrong");
     }
   };
+
+ 
   return (
     <Layout title={"Dashboard - Create Category"}>
       <div className="container-fluid m-3 p-3 dashboard">
@@ -117,7 +124,7 @@ const CreateCategory = () => {
                         <td key={c._id}>{c.name}</td>
                         <td>
                           <button
-                            className="btn btn-primary ms-2"
+                            className="btn btn-primary ms-2 px-2 py-1"
                             onClick={() => {
                               setVisible(true);
                               setUpdatedName(c.name);
@@ -127,7 +134,7 @@ const CreateCategory = () => {
                             Edit
                           </button>
                           <button
-                            className="btn btn-danger ms-2"
+                            className="btn btn-danger ms-2 px-2 py-1"
                             onClick={() => {
                               handleDelete(c._id);
                             }}
@@ -146,11 +153,13 @@ const CreateCategory = () => {
               footer={null}
               visible={visible}
             >
-              <CategoryForm
-                value={updatedName}
-                setValue={setUpdatedName}
-                handleSubmit={handleUpdate}
-              />
+              <div className="modal-body">
+                <CategoryForm
+                  value={updatedName}
+                  setValue={setUpdatedName}
+                  handleSubmit={handleUpdate}
+                />
+              </div>
             </Modal>
           </div>
         </div>

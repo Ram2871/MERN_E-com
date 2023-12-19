@@ -78,25 +78,21 @@ export const getProductsController = async (req, res) => {
 //get specific products
 export const getProductController = async (req, res) => {
   try {
-    const products = await productModel
+    const product = await productModel
       .findOne({ slug: req.params.slug })
-      .populate("category")
       .select("-photo")
-      .limit(12)
-      .sort({ createdAt: -1 });
-
+      .populate("category");
     res.status(200).send({
       success: true,
-      counTotal: products.length,
-      message: "All Products",
-      products,
+      message: "Single Product Fetched",
+      product,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Erorr in getting specific product",
-      error: error.message,
+      message: "Eror while getitng single product",
+      error,
     });
   }
 };

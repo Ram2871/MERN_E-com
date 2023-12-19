@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import Layout from "./../../components/layout/Layout";
 import AdminMenu from "./../../components/layout/AdminMenu";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "./../../utility/api";
+import { Modal } from "antd";
 import { Select } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 const { Option } = Select;
 
 const UpdateProduct = () => {
@@ -23,8 +24,8 @@ const UpdateProduct = () => {
   //get single product
   const getSingleProduct = async () => {
     try {
-      const { data } = await axios.get(
-        `/api/v1/product/get-product/${params.slug}`
+      const { data } = await api.get(
+        `/api/v1/product/specific-product/${params.slug}`
       );
       setName(data.product.name);
       setId(data.product._id);
@@ -45,9 +46,9 @@ const UpdateProduct = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await api.get("/api/v1/category/get-categories");
       if (data?.success) {
-        setCategories(data?.category);
+        setCategories(data?.categories);
       }
     } catch (error) {
       console.log(error);
@@ -70,7 +71,7 @@ const UpdateProduct = () => {
       productData.append("quantity", quantity);
       photo && productData.append("photo", photo);
       productData.append("category", category);
-      const { data } = axios.put(
+      const { data } = api.put(
         `/api/v1/product/update-product/${id}`,
         productData
       );
@@ -78,7 +79,7 @@ const UpdateProduct = () => {
         toast.error(data?.message);
       } else {
         toast.success("Product Updated Successfully");
-        navigate("/dashboard/admin/products");
+        navigate("/admin/products");
       }
     } catch (error) {
       console.log(error);
@@ -91,14 +92,29 @@ const UpdateProduct = () => {
     try {
       let answer = window.prompt("Are You Sure want to delete this product ? ");
       if (!answer) return;
-      const { data } = await axios.delete(
-        `/api/v1/product/delete-product/${id}`
-      );
+      const { data } = await api.delete(`/api/v1/product/delete-product/${id}`);
       toast.success("Product DEleted Succfully");
-      navigate("/dashboard/admin/products");
+      navigate("/admin/products");
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
+    }
+  };
+  
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    // Check if a file is selected
+    if (selectedFile) {
+      // Check if the file size is less than 1MB (1MB = 1024 * 1024 bytes)
+      if (selectedFile.size <= 1024 * 1024) {
+        setPhoto(selectedFile);
+      } else {
+        toast.error("File size must be less than 1MB");
+        // Optionally, you can reset the file input
+        e.target.value = null;
+      }
     }
   };
   return (
@@ -110,119 +126,133 @@ const UpdateProduct = () => {
           </div>
           <div className="col-md-9">
             <h1>Update Product</h1>
-            <div className="m-1 w-75">
-              <Select
-                bordered={false}
-                placeholder="Select a category"
-                size="large"
-                showSearch
-                className="form-select mb-3"
-                onChange={(value) => {
-                  setCategory(value);
-                }}
-                value={category}
-              >
-                {categories?.map((c) => (
-                  <Option key={c._id} value={c._id}>
-                    {c.name}
-                  </Option>
-                ))}
-              </Select>
-              <div className="mb-3">
-                <label className="btn btn-outline-secondary col-md-12">
-                  {photo ? photo.name : "Upload Photo"}
-                  <input
-                    type="file"
-                    name="photo"
-                    accept="image/*"
-                    onChange={(e) => setPhoto(e.target.files[0])}
-                    hidden
-                  />
-                </label>
-              </div>
-              <div className="mb-3">
-                {photo ? (
-                  <div className="text-center">
-                    <img
-                      src={URL.createObjectURL(photo)}
-                      alt="product_photo"
-                      height={"200px"}
-                      className="img img-responsive"
+            <div className="m-2 row">
+              <div className="col-4">
+                <div className="mb-3">
+                  <label className="btn btn-outline-secondary col-md-12">
+                    {photo ? photo.name : "Upload Photo"}
+                    <input
+                      type="file"
+                      name="photo"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      hidden
                     />
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <img
-                      src={`/api/v1/product/product-photo/${id}`}
-                      alt="product_photo"
-                      height={"200px"}
-                      className="img img-responsive"
-                    />
-                  </div>
-                )}
+                  </label>
+                </div>
+                <div className="mb-3">
+                  {photo ? (
+                    <div className="text-center">
+                      <img
+                        src={URL.createObjectURL(photo)}
+                        alt="product_photo"
+                        style={{ width: "120px" }}
+                        className="img img-responsive"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <img
+                        src={`/api/v1/product/get-photo/${id}`}
+                        alt="product_photo"
+                        style={{ width: "120px" }}
+                        className="img img-responsive"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  value={name}
-                  placeholder="write a name"
-                  className="form-control"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <textarea
-                  type="text"
-                  value={description}
-                  placeholder="write a description"
-                  className="form-control"
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-
-              <div className="mb-3">
-                <input
-                  type="number"
-                  value={price}
-                  placeholder="write a Price"
-                  className="form-control"
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="number"
-                  value={quantity}
-                  placeholder="write a quantity"
-                  className="form-control"
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
+              <div className="col-8">
                 <Select
                   bordered={false}
-                  placeholder="Select Shipping "
+                  placeholder="Select a category"
                   size="large"
                   showSearch
-                  className="form-select mb-3"
+                  className="w-100 border rounded mb-3"
                   onChange={(value) => {
-                    setShipping(value);
+                    setCategory(value);
                   }}
-                  value={shipping ? "yes" : "No"}
+                  value={category}
                 >
-                  <Option value="0">No</Option>
-                  <Option value="1">Yes</Option>
+                  {categories?.map((c) => (
+                    <Option key={c._id} value={c._id}>
+                      {c.name}
+                    </Option>
+                  ))}
                 </Select>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={name}
+                    placeholder="write a name"
+                    className="form-control"
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    type="text"
+                    value={description}
+                    placeholder="write a description"
+                    className="form-control"
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="number"
+                    value={price}
+                    placeholder="write a Price"
+                    className="form-control"
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="number"
+                    value={quantity}
+                    placeholder="write a quantity"
+                    className="form-control"
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <Select
+                    bordered={false}
+                    placeholder="Select Shipping "
+                    size="large"
+                    showSearch
+                    className="w-100 border rounded mb-3"
+                    onChange={(value) => {
+                      setShipping(value);
+                    }}
+                    value={shipping ? "yes" : "No"}
+                  >
+                    <Option value="0">No</Option>
+                    <Option value="1">Yes</Option>
+                  </Select>
+                </div>
               </div>
-              <div className="mb-3">
-                <button className="btn btn-primary" onClick={handleUpdate}>
-                  UPDATE PRODUCT
-                </button>
-              </div>
-              <div className="mb-3">
-                <button className="btn btn-danger" onClick={handleDelete}>
-                  DELETE PRODUCT
-                </button>
+
+              <div className="d-flex gap-2">
+                <div className="mb-3">
+                  <button className="btn btn-primary" onClick={handleUpdate}>
+                    UPDATE 
+                  </button>
+                </div>
+                <div className="mb-3">
+                  <button
+                    className="btn btn-danger"
+                    onClick={handleDelete}
+                  >
+                    DELETE 
+                  </button>
+                </div>
+                <div className="mb-3">
+                  <Link className="btn btn-primary" to='/admin/products'>
+                    Cancel
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
