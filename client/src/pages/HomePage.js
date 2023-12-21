@@ -40,7 +40,7 @@ const HomePage = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get(`/api/v1/product/get-products`);
+      const { data } = await api.get(`/api/v1/product/product-list/${page}`);
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -106,16 +106,16 @@ const HomePage = () => {
       console.log(error);
     }
   };
+
   return (
     <Layout title={"ALl Products - Best offers "}>
-      {/* banner image */}
+    <div className="pt-3">
       <img
         src="/images/banner.png"
         className="banner-img"
         alt="bannerimage"
         width={"100%"}
       />
-      {/* banner image */}
       <div className="container-fluid row mt-3 home-page">
         <div className="col-md-3 filters">
           <h4 className="text-center">Filter By Category</h4>
@@ -220,6 +220,8 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+    </div>
     </Layout>
   );
 };

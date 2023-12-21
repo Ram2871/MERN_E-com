@@ -10,6 +10,7 @@ import {
   MDBDropdownToggle,
   MDBDropdownItem,
 } from "mdb-react-ui-kit";
+import SearchInput from "../form/SearchInput";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
@@ -46,10 +47,12 @@ const Header = () => {
             >
               <span className="navbar-toggler-icon" />
             </button>
-            <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+
+            <div className="collapse navbar-collapse " id="navbarTogglerDemo01">
               <Link to="/" className="navbar-brand">
                 🛒 Shopmon
               </Link>
+              <SearchInput />
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li className="nav-item">
                   <NavLink to="/" className="nav-link ">

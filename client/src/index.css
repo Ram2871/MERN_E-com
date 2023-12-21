@@ -84,9 +84,10 @@ body {
   border-radius: 0;
 }
 .search-form button {
-  background-color: #000000;
+  background-color: #14964a96;
+  border: none;
   border-radius: 0;
-  color: white;
+  color: rgb(43, 42, 42);
 }
 
 /* =============================
