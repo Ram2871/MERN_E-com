@@ -10,16 +10,19 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
 import { AuthProvider } from "./context/auth";
 import { SearchProvider } from "./context/search.js";
+import { CartProvider } from "./context/cart.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthProvider>
     <SearchProvider>
-      <React.StrictMode>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </React.StrictMode>
+      <CartProvider>
+        <React.StrictMode>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </React.StrictMode>
+      </CartProvider>
     </SearchProvider>
   </AuthProvider>
 );

@@ -11,12 +11,16 @@ import {
   MDBDropdownItem,
 } from "mdb-react-ui-kit";
 import SearchInput from "../form/SearchInput";
+import useCategories from "../../hooks/useCategories";
+import { DownOutlined } from "@ant-design/icons";
+import { Dropdown, message, Space } from "antd";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
   const access_token = localStorage.getItem("access_token");
   const user = localStorage.getItem("user-details");
   const navigate = useNavigate();
+  const categories = useCategories();
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user-details");
@@ -30,6 +34,16 @@ const Header = () => {
     }, 1000);
     navigate("/login");
   };
+  const handleCategoryFilter = ({ key }) => {
+    navigate(`/categories${key && "/" + key}`);
+  };
+  const items = categories.map((e) => ({
+    label: e.name,
+    key: e.slug,
+  }));
+
+  items.unshift({ label: "All Categories", key: "" });
+
   return (
     <>
       <header>
@@ -53,12 +67,24 @@ const Header = () => {
                 🛒 Shopmon
               </Link>
               <SearchInput />
+              <Dropdown
+                menu={{
+                  items,
+                  onClick: (key) => handleCategoryFilter(key),
+                }}
+              >
+                <Space>
+                  Categories
+                  <DownOutlined />
+                </Space>
+              </Dropdown>
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li className="nav-item">
                   <NavLink to="/" className="nav-link ">
                     Home
                   </NavLink>
                 </li>
+
                 <li className="nav-item">
                   <NavLink to="/about" className="nav-link ">
                     About

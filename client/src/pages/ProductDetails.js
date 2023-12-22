@@ -14,6 +14,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (params?.slug) getProduct();
   }, [params?.slug]);
+
   //getProduct
   const getProduct = async () => {
     try {
@@ -26,6 +27,7 @@ const ProductDetails = () => {
       console.log(error);
     }
   };
+
   //get similar product
   const getSimilarProduct = async (pid, cid) => {
     try {
@@ -37,6 +39,7 @@ const ProductDetails = () => {
       console.log(error);
     }
   };
+  
   return (
     <Layout>
       <div className="row container product-details">
