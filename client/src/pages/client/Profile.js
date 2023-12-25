@@ -38,10 +38,10 @@ const Profile = () => {
         toast.error(data?.error);
       } else {
         setAuth({ ...auth, user: data?.updatedUser });
-        let ls = localStorage.getItem("auth");
-        ls = JSON.parse(ls);
-        ls.user = data.updatedUser;
-        localStorage.setItem("auth", JSON.stringify(ls));
+        // let ls = localStorage.getItem("user-details");
+        // ls = JSON.parse(ls);
+        // ls = data.updatedUser;
+        localStorage.setItem("user-details", JSON.stringify(data?.updatedUser));
         toast.success("Profile Updated Successfully");
       }
     } catch (error) {

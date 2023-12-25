@@ -37,6 +37,7 @@ const CategoryProduct = () => {
                   <img
                     src={`/api/v1/product/get-photo/${p._id}`}
                     className="card-img-top"
+                    styl
                     alt={p.name}
                   />
                   <div className="card-body">

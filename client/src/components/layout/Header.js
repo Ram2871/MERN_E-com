@@ -14,9 +14,11 @@ import SearchInput from "../form/SearchInput";
 import useCategories from "../../hooks/useCategories";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, message, Space } from "antd";
+import { useCart } from "../../context/cart";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
+  const [cart] = useCart();
   const access_token = localStorage.getItem("access_token");
   const user = localStorage.getItem("user-details");
   const navigate = useNavigate();
@@ -102,7 +104,7 @@ const Header = () => {
                 </li>
                 <li className="nav-item">
                   <NavLink to="/cart" className="nav-link ">
-                    <Badge count={5} showZero offset={[10, -5]}>
+                    <Badge count={cart?.length} showZero offset={[10, -5]}>
                       Cart
                     </Badge>
                   </NavLink>

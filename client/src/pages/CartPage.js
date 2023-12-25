@@ -8,6 +8,7 @@ import { AiFillWarning } from "react-icons/ai";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "../styles/CartStyles.css";
+import { MdDeleteOutline  } from "react-icons/md";
 
 const CartPage = () => {
   const [auth, setAuth] = useAuth();
@@ -32,6 +33,7 @@ const CartPage = () => {
       console.log(error);
     }
   };
+
   //detele item
   const removeCartItem = (pid) => {
     try {
@@ -54,6 +56,7 @@ const CartPage = () => {
       console.log(error);
     }
   };
+  
   useEffect(() => {
     getToken();
   }, [auth?.token]);
@@ -70,13 +73,14 @@ const CartPage = () => {
       setLoading(false);
       localStorage.removeItem("cart");
       setCart([]);
-      navigate("/dashboard/user/orders");
+      navigate("/user/orders");
       toast.success("Payment Completed Successfully ");
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
+
   return (
     <Layout>
       <div className=" cart-page">
@@ -98,64 +102,64 @@ const CartPage = () => {
         </div>
         <div className="container ">
           <div className="row ">
-            <div className="col-md-7  p-0 m-0">
+            <div className="col-md-6  p-0 m-0">
               {cart?.map((p) => (
-                <div className="row card flex-row" key={p._id}>
-                  <div className="col-md-4">
+                <div className="row my-2 p-2 me-5 card flex-row" key={p._id}>
+                  <div className="col-md-5">
                     <img
-                      src={`/api/v1/product/product-photo/${p._id}`}
+                      src={`/api/v1/product/get-photo/${p._id}`}
                       className="card-img-top"
                       alt={p.name}
                       width="100%"
                       height={"130px"}
                     />
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <p>{p.name}</p>
                     <p>{p.description.substring(0, 30)}</p>
                     <p>Price : {p.price}</p>
                   </div>
-                  <div className="col-md-4 cart-remove-btn">
+                  <div className="col-md-1 cart-remove-btn">
                     <button
-                      className="btn btn-danger"
+                      className="btn p-1 btn-danger"
                       onClick={() => removeCartItem(p._id)}
                     >
-                      Remove
+                      <MdDeleteOutline className="fs-6"/>
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="col-md-5 cart-summary ">
+            <div className="col-md-5 ms-2 cart-summary ">
               <h2>Cart Summary</h2>
               <p>Total | Checkout | Payment</p>
               <hr />
               <h4>Total : {totalPrice()} </h4>
               {auth?.user?.address ? (
                 <>
-                  <div className="mb-3">
+                  <div className="my-3">
                     <h4>Current Address</h4>
                     <h5>{auth?.user?.address}</h5>
                     <button
-                      className="btn btn-outline-warning"
-                      onClick={() => navigate("/dashboard/user/profile")}
+                      className="btn p-1 btn-outline-warning"
+                      onClick={() => navigate("/user/profile")}
                     >
                       Update Address
                     </button>
                   </div>
                 </>
               ) : (
-                <div className="mb-3">
+                <div className="my-3">
                   {auth?.token ? (
                     <button
-                      className="btn btn-outline-warning"
-                      onClick={() => navigate("/dashboard/user/profile")}
+                      className="btn p-1 btn-outline-warning"
+                      onClick={() => navigate("/user/profile")}
                     >
                       Update Address
                     </button>
                   ) : (
                     <button
-                      className="btn btn-outline-warning"
+                      className="btn p-1 btn-outline-warning"
                       onClick={() =>
                         navigate("/login", {
                           state: "/cart",
@@ -167,7 +171,7 @@ const CartPage = () => {
                   )}
                 </div>
               )}
-              <div className="mt-2">
+              <div className="my-2">
                 {!clientToken || !auth?.token || !cart?.length ? (
                   ""
                 ) : (
@@ -183,7 +187,7 @@ const CartPage = () => {
                     />
 
                     <button
-                      className="btn btn-primary"
+                      className="btn p-1 btn-primary"
                       onClick={handlePayment}
                       disabled={loading || !instance || !auth?.user?.address}
                     >
